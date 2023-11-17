@@ -95,8 +95,8 @@
             }
 
             function mostrarComprovante(valorPix, remetente, destinatario) {
-                let infoRemetente = `CPF: ${remetente.cpf}, Nome: ${remetente.nome}, Saldo: ${remetente.saldo}`;
-                let infoDestinatario = `CPF: ${destinatario.cpf}, Nome: ${destinatario.nome}, Saldo: ${destinatario.saldo}`;
+                let infoRemetente = `CPF: ${remetente.cpf}, Nome: ${remetente.nome}, Saldo: ` + (remetente.saldo);
+                let infoDestinatario = `CPF: ${destinatario.cpf}, Nome: ${destinatario.nome}, Saldo: ` + (destinatario.saldo);
                 let transferenciaInfo = `Valor da transferência: R$${valorPix.toFixed(2)}<br><br>Dados da conta do remetente:<br>${infoRemetente}<br><br>Dados da conta do destinatário:<br>${infoDestinatario}`;
                 document.getElementById("maracutaia").innerHTML = transferenciaInfo;
                 botao.onclick = function () {
