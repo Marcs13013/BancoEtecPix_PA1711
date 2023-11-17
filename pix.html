@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco Etec</title>
+</head>
+
+<body>
+
+    <h1>Transferências Pix e Cadastro de Contas</h1>
+    <p id="beregotcheco"></p>
+    <p id="maracutaia"></p>
+    <p id="neutro"></p>
+
+    <button id="reset"> Reiniciar aplicativo </button>
+
+    <script>
+        let botao = document.getElementById("reset");
+        let contadorCadastros = 0;
+        let i = 1;
+        let cadastros = [];
+
+
+        function reset() {
+
+            let opcao1 = Number(prompt("Escolha uma das opções \n(1) Cadastrar contas \n(2) Área pix \n(3) Fechar aplicativo"))
+
+            switch (opcao1) {
+                case 1:
+                    Cadastro1()
+                    function Cadastro1() {
+                        let novoCadastro1 = {
+
+                            cpf: prompt("Digite o cpf para cadastrar a conta que poderá receber o pix"),
+                            nome: prompt("Digite o nome para cadastrar a conta que poderá receber o pix"),
+                            saldo: prompt("Digite o saldo está disponível nessa outra conta")
+
+                        }
+                        cadastros.push(novoCadastro1)
+                    }
+
+
+                    let opcao2 = Number(prompt("Escolha uma das opções \n(1) Cadastrar novas contas \n(2) Prosseguir na transferência"))
+
+                    while (true) {
+                        if (opcao2 == 1) {
+                            Cadastro1()
+                            opcao2 = prompt("Escolha uma das opções \n(1) Cadastrar novas contas \n(2) Prosseguir na transferência")
+
+                        } else if (opcao2 == 2) {
+
+                            let opcao3 = prompt("Escolha uma das opções \n(1) Área pix \n(2) Voltar para cadastrar mais contas \n(3) Fechar aplicativo")
+
+                            switch (true) {
+                                case opcao3 == 1:
+                                    fazerPix()
+                                    break;
+                                case opcao3 == 2:
+                                    Cadastro1()
+                                    break;
+                                case opcao3 == 3:
+                                    document.getElementById("normal").innerHTML = "(Aplicativo Encerrado) </br>" + mostrar()
+                                    break;
+
+                                default:
+                                    alert("Para de tentar quebrar meu código parça, digita logo uma opção válida")
+                                    opcao3 = prompt("Escolha uma das opções \n(1) Área pix \n(2) Voltar para cadastrar mais contas \n(3) Fechar aplicativo")
+
+                                    break;
+                            }
+                        } else {
+                            alert("tá me tirando né mano, Digite uma opção válida doidão")
+                            opcao2 = Number(prompt("Escolha uma das opções \n(1) Cadastrar novas contas \n(2) Prosseguir na transferência"))
+                        }
+                    }
+
+
+
+                    break;
+                case 2:
+                    alert("Você ainda não cadastrou nenhuma conta, não é possivel acessar a área pix")
+                    reset()
+                    break;
+                case 3:
+                    i = 0
+                    mostrar()
+                    break;
+
+                default:
+                    alert("Para de tentar quebrar meu código parça, digita logo uma opção válida")
+                    reset()
+                    break;
+            }
+
+            function mostrarComprovante(valorPix, remetente, destinatario) {
+                let infoRemetente = `CPF: ${remetente.cpf}, Nome: ${remetente.nome}, Saldo: ${remetente.saldo}`;
+                let infoDestinatario = `CPF: ${destinatario.cpf}, Nome: ${destinatario.nome}, Saldo: ${destinatario.saldo}`;
+                let transferenciaInfo = `Valor da transferência: R$${valorPix.toFixed(2)}<br><br>Dados da conta do remetente:<br>${infoRemetente}<br><br>Dados da conta do destinatário:<br>${infoDestinatario}`;
+                document.getElementById("maracutaia").innerHTML = transferenciaInfo;
+                botao.onclick = function () {
+                    reset()
+                }
+            }
+
+            function mostrar() {
+                document.getElementById("beregotcheco").innerHTML = "(Aplicativo Encerrado) \nNão foi realizado nenhum pix ou nenhuma conta foi cadastrada </br>"
+                botao.onclick = function () {
+                    reset()
+                }
+            }
+            function fazerPix() {
+                let enviarPix = prompt("Digite o CPF que irá enviar o PIX");
+                let valorPix = parseFloat(prompt("Escreva o valor do PIX que será enviado"));
+                let receberPix = prompt("Digite o CPF que irá receber o PIX");
+
+                let remetente = BuscarCPF(enviarPix);
+                let destinatario = BuscarCPF(receberPix);
+
+                if (!remetente) {
+                    alert("CPF do remetente não cadastrado.");
+                    reset();
+                    return;
+                } else if (!destinatario) {
+                    alert("CPF do destinatário não cadastrado.");
+                    reset();
+                    return;
+                }
+
+                Pagamento(remetente, destinatario, valorPix);
+            }
+
+            function Pagamento(remetente, destinatario, valorPix) {
+                if (valorPix > remetente.saldo) {
+                    alert("Saldo insuficiente para realizar a transferência.");
+                    fazerPix();
+                } else {
+                    remetente.saldo -= valorPix;
+                    destinatario.saldo += valorPix;
+                    mostrarComprovante(valorPix, remetente, destinatario);
+                }
+            }
+
+            function BuscarCPF(cpf) {
+                for (let i = 0; i < cadastros.length; i++) {
+                    if (cadastros[i].cpf === cpf) {
+                        return cadastros[i]
+                    }
+                }
+            }
+        }
+
+
+        reset()
+
+    </script>
+
+
+</body>
+
+</html>
